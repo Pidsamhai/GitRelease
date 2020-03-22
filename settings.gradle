@@ -1,0 +1,3 @@
+include ':app:gitrelease'
+include ':app'
+rootProject.name = "Github Release"
