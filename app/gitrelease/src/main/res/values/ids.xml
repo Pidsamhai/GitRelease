@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="massage" type="id" />
+    <item name="title" type="id" />
+    <item name="body" type="id" />
+</resources>
