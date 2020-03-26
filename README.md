@@ -2,7 +2,7 @@
 [![](https://jitpack.io/v/Pidsamhai/GitRelease.svg)](https://jitpack.io/#Pidsamhai/GitRelease)
 
 <p align="center">
-<img src="./art/vdo.gif" height="300" />
+<img src="./art/vdo.gif" height="600" />
 </p>
 
 
