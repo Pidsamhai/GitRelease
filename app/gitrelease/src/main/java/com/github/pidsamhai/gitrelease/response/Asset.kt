@@ -21,7 +21,7 @@ data class Asset(
     @SerializedName("node_id")
     val nodeId: String?,
     @SerializedName("size")
-    val size: Int?,
+    val size: Long?,
     @SerializedName("state")
     val state: String?,
     @SerializedName("updated_at")

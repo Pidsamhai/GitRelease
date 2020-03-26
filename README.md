@@ -1,6 +1,11 @@
 # GitRelease
 [![](https://jitpack.io/v/Pidsamhai/GitRelease.svg)](https://jitpack.io/#Pidsamhai/GitRelease)
 
+<p align="center">
+<img src="./art/vdo.gif" height="300" />
+</p>
+
+
 ## License
 ```
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE

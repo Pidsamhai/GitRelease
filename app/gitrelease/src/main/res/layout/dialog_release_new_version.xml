@@ -17,6 +17,8 @@
         android:textSize="20sp"
         android:textStyle="bold" />
 
+
+
     <TextView
         android:id="@+id/massage"
         android:layout_width="match_parent"
