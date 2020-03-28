@@ -81,19 +81,21 @@ class GitRelease(
 
     }
 
-    fun checkNewVersion() = GlobalScope.launch(Dispatchers.Main) {
-        showLoading()
-        val data = githubReleaseApi.getReleaseVersion()
-        hideLoading()
-        if (data.err == null) {
-            url = data.downloadUrl
-            releaseMassage = data.version + "  [size ${data.size.toString()} mb]"
-            body = data.changeLog
-            apkName = data.apkName
-            try {
-                showRelease()
-            } catch (e: Exception) {
-                e.printStackTrace()
+    fun checkNewVersion() {
+        GlobalScope.launch(Dispatchers.Main) {
+            showLoading()
+            val data = githubReleaseApi.getReleaseVersion()
+            hideLoading()
+            if (data.err == null) {
+                url = data.downloadUrl
+                releaseMassage = data.version + "  [size ${data.size.toString()} mb]"
+                body = data.changeLog
+                apkName = data.apkName
+                try {
+                    showRelease()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
     }
@@ -107,7 +109,7 @@ class GitRelease(
         updateDialog.show()
     }
 
-    private fun cancelCheck() = checkNewVersion().cancel()
+    private fun cancelCheck(){}
 
     private fun hideLoading() {
         if (loading)
