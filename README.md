@@ -17,6 +17,8 @@ allprojects {
 ```kotlin
 dependencies {
   implementation 'com.github.Pidsamhai:GitRelease:0.1-alpha'
+  // This project uses kotlinx-coroutines.
+  implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.5'
 }
 ```
 ## Quick start
