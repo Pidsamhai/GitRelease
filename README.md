@@ -21,6 +21,31 @@ dependencies {
   implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.5'
 }
 ```
+## Setup
+Permission AndroidManifest.xml
+```xml
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+```
+Add file provider in application tag
+```xml
+<provider
+            android:authorities="{Your package name}.provider" 
+            android:name="androidx.core.content.FileProvider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepath"/>
+</provider>
+```
+filepath.xml   res > xml
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <external-files-path name="files" path="." />
+</paths>
+```
 ## Quick start
 ```kotlin
 class MainActivity : AppCompatActivity() {
