@@ -5,7 +5,43 @@
 <img src="./art/vdo.gif" height="600" />
 </p>
 
+## Jitpack
+```kotlin
+allprojects {
+  repositories {
+    ...
+    maven { url 'https://jitpack.io' }
+  }
+}
+```
+```kotlin
+dependencies {
+  implementation 'com.github.Pidsamhai:GitRelease:0.1-alpha'
+}
+```
+## Quick start
+```kotlin
+class MainActivity : AppCompatActivity() {
 
+    @SuppressLint("SetTextI18n")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        
+        val owner = "Pidsamhai"
+        val repo = "release_file_test"
+        val currentVersion = BuildConfig.VERSION_NAME
+        
+        val gitRelease = GitRelease(this, owner, repo, currentVersion).apply {
+            loading = true
+            title = "Massage Test"
+            massage = "Title Test"
+        }
+        
+        gitRelease.checkNewVersion()
+    }
+}
+```
 ## License
 ```
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
