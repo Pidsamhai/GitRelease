@@ -7,9 +7,9 @@ import android.util.Log
 import androidx.core.content.FileProvider
 import java.io.File
 
-fun installApk(activity: Activity, apkPath: File) {
+internal fun installApk(activity: Activity, apkPath: File) {
     try {
-        val auth = "com.github.pidsamhai.sample"
+        val auth = "${activity.packageName}.provider"
         val uri = FileProvider.getUriForFile(activity, auth, apkPath)
         Log.e(ContentValues.TAG, "Path: $apkPath")
         Log.e(ContentValues.TAG, "File Path: $apkPath")

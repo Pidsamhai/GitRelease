@@ -3,7 +3,7 @@ package com.github.pidsamhai.gitrelease.response
 
 import com.google.gson.annotations.SerializedName
 
-data class GitReleaseResponse(
+internal data class GitReleaseResponse(
     @SerializedName("assets")
     val assets: List<Asset?>?,
     @SerializedName("assets_url")

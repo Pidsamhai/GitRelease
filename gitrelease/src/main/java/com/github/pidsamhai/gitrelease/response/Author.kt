@@ -3,7 +3,7 @@ package com.github.pidsamhai.gitrelease.response
 
 import com.google.gson.annotations.SerializedName
 
-data class Author(
+internal data class Author(
     @SerializedName("avatar_url")
     val avatarUrl: String?,
     @SerializedName("events_url")

@@ -3,7 +3,7 @@ package com.github.pidsamhai.gitrelease.response
 
 import com.google.gson.annotations.SerializedName
 
-data class Asset(
+internal data class Asset(
     @SerializedName("browser_download_url")
     val browserDownloadUrl: String?,
     @SerializedName("content_type")

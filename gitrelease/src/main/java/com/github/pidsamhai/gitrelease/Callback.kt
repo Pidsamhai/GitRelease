@@ -3,13 +3,13 @@ package com.github.pidsamhai.gitrelease
 import com.github.pidsamhai.gitrelease.response.GitReleaseResponse
 import java.io.File
 
-typealias IsError = Boolean
-typealias ReleaseResponseData = Pair<ResponseData, IsError>
-typealias ReleaseDataCallback = (data: ReleaseResponseData) -> Unit
-typealias DownloadCallback = (percent: Int, current: Long, fileSize: Long, success: Boolean, apk: File) -> Unit
+internal typealias IsError = Boolean
+internal typealias ReleaseResponseData = Pair<ResponseData, IsError>
+internal typealias ReleaseDataCallback = (data: ReleaseResponseData) -> Unit
+internal typealias DownloadCallback = (percent: Int, current: Long, fileSize: Long, success: Boolean, apk: File) -> Unit
 
 
-data class UpdateData(
+internal data class UpdateData(
     val apkName: String? = null,
     val version: String? = null,
     val downloadUrl: String? = null,
@@ -21,13 +21,13 @@ data class UpdateData(
     val newVersion: Boolean = false
 )
 
-data class Checksum(
+internal data class Checksum(
     val md5: String?,
     val sha1: String?,
     val sha512: String?
 )
 
-data class ResponseData(
+internal data class ResponseData(
     @Suppress("ArrayInDataClass")
     val response: Array<GitReleaseResponse>?,
     val err: Exception?

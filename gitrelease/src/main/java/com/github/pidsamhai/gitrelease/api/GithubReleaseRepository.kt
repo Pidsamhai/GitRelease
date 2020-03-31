@@ -12,7 +12,7 @@ import com.github.pidsamhai.gitrelease.*
 import com.github.pidsamhai.gitrelease.response.GitReleaseResponse
 import java.io.File
 
-class GithubReleaseRepository(
+internal class GithubReleaseRepository(
     owner: String,
     repo: String,
     private val currentVersion: String
