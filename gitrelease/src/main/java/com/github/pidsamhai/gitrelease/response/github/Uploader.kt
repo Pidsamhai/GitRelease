@@ -1,9 +1,9 @@
-package com.github.pidsamhai.gitrelease.response
+package com.github.pidsamhai.gitrelease.response.github
 
 
 import com.google.gson.annotations.SerializedName
 
-internal data class Author(
+internal data class Uploader(
     @SerializedName("avatar_url")
     val avatarUrl: String?,
     @SerializedName("events_url")

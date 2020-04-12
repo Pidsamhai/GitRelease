@@ -1,6 +1,9 @@
-# GitRelease
-[![](https://jitpack.io/v/Pidsamhai/GitRelease.svg)](https://jitpack.io/#Pidsamhai/GitRelease)
-
+<h1 align="center">GitRelease</h1>
+<p align="center">
+<a href="https://www.codacy.com/gh/Pidsamhai/GitRelease?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Pidsamhai/GitRelease&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/90a5f1b1916b49ddaa30aac59c749bf3"/></a>
+<a href="https://jitpack.io/#Pidsamhai/GitRelease/"> <img src="https://jitpack.io/v/Pidsamhai/GitRelease.svg" /></a>
+<a href="https://kotlinlang.org"> <img src="https://img.shields.io/badge/Kotlin-1.3.71-blue.svg" /> </a>
+</p>
 <p align="center">
 <img src="./art/vdo.gif" height="600" />
 </p>
@@ -16,7 +19,7 @@ allprojects {
 ```
 ```kotlin
 dependencies {
-  implementation 'com.github.Pidsamhai:GitRelease:0.1-alpha'
+  implementation 'com.github.Pidsamhai:GitRelease::<latest-version>'
   // This project uses kotlinx-coroutines.
   implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.5'
 }
@@ -54,21 +57,42 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        
-        val owner = "Pidsamhai"
-        val repo = "release_file_test"
+        val owner = "owner" // Owner Name
+        val repo = "repository" // Repository name
         val currentVersion = BuildConfig.VERSION_NAME
-        
         val gitRelease = GitRelease(this, owner, repo, currentVersion).apply {
             loading = true
-            title = "Massage Test"
-            massage = "Title Test"
+            checksum = true
         }
-        
         gitRelease.checkNewVersion()
+        checkVersion.setOnClickListener {
+            gitRelease.checkNewVersion()
+        }
     }
 }
 ```
+
+## Checksum template
+- support md5,sha1,sha256
+- If you don't want set checksum = false
+```json
+{
+  "algorithm": "sha256",
+  "type": {
+    "md5": "265fd1f1bec425d4cfa2c7d3de80e669",
+    "sha1": "78e2f1e29ac419ecd22a2da80e2971280bf08cc7",
+    "sha256": "21ce8d224db9a70596f5fd4556d7bae8b3f1304ffdf954ebb649830fa2493cf8"
+  }
+}
+```
+
+### Changelog
+#### v0.1-alpha
+- initial release
+#### v0.2-beta
+- use [Markdown View](https://github.com/mukeshsolanki/MarkdownView-Android). You can use MarkDown template for changelog massage.
+- add checksum support
+
 ## License
 ```
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE

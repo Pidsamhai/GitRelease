@@ -1,4 +1,4 @@
-package com.github.pidsamhai.gitrelease.response
+package com.github.pidsamhai.gitrelease.response.github
 
 
 import com.google.gson.annotations.SerializedName

@@ -7,8 +7,11 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import com.github.kittinunf.fuel.core.Response
 import com.github.pidsamhai.gitrelease.api.GithubReleaseRepository
+import com.github.pidsamhai.gitrelease.util.FileUtil
+import com.github.pidsamhai.gitrelease.util.installApk
+import com.github.pidsamhai.gitrelease.util.validateApk
+import com.mukesh.MarkdownView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -34,13 +37,18 @@ class GitRelease(
     var massage: String = "Loading..."
     var releaseTitle = "New version !!"
     var releaseMassage: String? = ""
+    var checksum: Boolean = true
     private var body: String? = ""
-    private val githubReleaseRepository: GithubReleaseRepository = GithubReleaseRepository(owner, repo, currentVersion)
-    private val downloadFilepath: File? = FileUtil(activity).downloadFilePath
+    private val githubReleaseRepository: GithubReleaseRepository =
+        GithubReleaseRepository(owner, repo, currentVersion)
+    private val downloadFilepath: File? = FileUtil(
+        activity
+    ).downloadFilePath
     private var updateData: UpdateData? = null
     private val releaseView: View =
         activity.layoutInflater.inflate(R.layout.dialog_release_new_version, null)
-    private val updateView: View = activity.layoutInflater.inflate(R.layout.dialog_update_progress, null)
+    private val updateView: View =
+        activity.layoutInflater.inflate(R.layout.dialog_update_progress, null)
     private val updateDialogProgress: ProgressBar = updateView.findViewById(R.id.progress)
     private val updateDialogMinMax: TextView = updateView.findViewById(R.id.minMax)
     private val updateDialogPercent: TextView = updateView.findViewById(R.id.percent)
@@ -48,7 +56,7 @@ class GitRelease(
     private val updateDialogTitle: TextView = updateView.findViewById(R.id.title)
     private val releaseDialogTitle: TextView = releaseView.findViewById(R.id.title)
     private val releaseDialogMassage: TextView = releaseView.findViewById(R.id.massage)
-    private val releaseDialogBody: TextView = releaseView.findViewById(R.id.body)
+    private val releaseDialogMarkdownView: MarkdownView = releaseView.findViewById(R.id.mkView)
 
     init {
         releaseDialog = AlertDialog.Builder(activity)
@@ -61,7 +69,7 @@ class GitRelease(
         releaseDialog.setOnShowListener {
             releaseDialogTitle.text = releaseTitle
             releaseDialogMassage.text = releaseMassage
-            releaseDialogBody.text = body
+            releaseDialogMarkdownView.setMarkDownText(body)
         }
         loadingDialog = AlertDialog.Builder(activity)
             .setTitle(title)
@@ -80,7 +88,7 @@ class GitRelease(
             .create()
     }
 
-    private fun resetUpdateDialogDetail(){
+    private fun resetUpdateDialogDetail() {
         updateDialogProgress.isIndeterminate = false
         activity.resources.also {
             updateDialogTitle.text = it.getString(R.string.gitRelease_update)
@@ -105,7 +113,10 @@ class GitRelease(
                     updateDialogPercent.text = "$percent% "
                 }
                 if (success) {
-                    checksum(file)
+                    if (checksum)
+                        checksum(file)
+                    else
+                        installApk(activity, file)
                     hideUpdate()
                 }
             }
@@ -142,10 +153,16 @@ class GitRelease(
             ) { _, _, _, success, file ->
                 if (success) {
                     hideUpdate()
-                    val v = validateApk(apk, file)
+                    val v = validateApk(
+                        apk,
+                        file
+                    )
                     Log.e("checksum", "$v")
                     if (v)
-                        installApk(activity, apk)
+                        installApk(
+                            activity,
+                            apk
+                        )
                 }
             }
         }

@@ -1,4 +1,4 @@
-package com.github.pidsamhai.gitrelease
+package com.github.pidsamhai.gitrelease.util
 
 import android.app.Activity
 import android.content.ContentValues

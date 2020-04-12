@@ -9,7 +9,7 @@ import com.github.kittinunf.fuel.gson.gsonDeserializerOf
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
 import com.github.pidsamhai.gitrelease.*
-import com.github.pidsamhai.gitrelease.response.GitReleaseResponse
+import com.github.pidsamhai.gitrelease.response.github.GitReleaseResponse
 import java.io.File
 
 internal class GithubReleaseRepository(
@@ -44,13 +44,13 @@ internal class GithubReleaseRepository(
 
     fun getReleaseData(callBack: ReleaseDataCallback) {
         repositoryUrl.httpGet()
-            .responseObject(gsonDeserializerOf(Array<GitReleaseResponse>::class.java)){ result ->
-                when(result){
-                    is Result.Success ->{
-                        callBack(ReleaseResponseData(ResponseData(result.get(),null),false))
+            .responseObject(gsonDeserializerOf(Array<GitReleaseResponse>::class.java)) { result ->
+                when (result) {
+                    is Result.Success -> {
+                        callBack(ReleaseResponseData(ResponseData(result.get(), null), false))
                     }
                     is Result.Failure -> {
-                        callBack(ReleaseResponseData(ResponseData(null,result.error),false))
+                        callBack(ReleaseResponseData(ResponseData(null, result.error), false))
                     }
                 }
 
@@ -75,7 +75,8 @@ internal class GithubReleaseRepository(
                 size = (assets.size!! / 1024) / 1024,
                 changeLog = baseObj.body,
                 checksumUrl = checksum!!.browserDownloadUrl,
-                newVersion = currentVersion != baseObj.tagName
+                newVersion = currentVersion != baseObj.tagName,
+                checksumName = checksum.name
             )
         } catch (e: Exception) {
             e.printStackTrace()

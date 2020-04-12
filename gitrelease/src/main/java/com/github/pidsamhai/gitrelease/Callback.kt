@@ -1,6 +1,6 @@
 package com.github.pidsamhai.gitrelease
 
-import com.github.pidsamhai.gitrelease.response.GitReleaseResponse
+import com.github.pidsamhai.gitrelease.response.github.GitReleaseResponse
 import java.io.File
 
 internal typealias IsError = Boolean
@@ -16,15 +16,9 @@ internal data class UpdateData(
     val size: Long? = null,
     val changeLog: String? = null,
     val checksumUrl: String? = null,
-    val checksumName: String? = "checksum.md5",
+    val checksumName: String? = null,
     val err: Exception? = null,
     val newVersion: Boolean = false
-)
-
-internal data class Checksum(
-    val md5: String?,
-    val sha1: String?,
-    val sha512: String?
 )
 
 internal data class ResponseData(

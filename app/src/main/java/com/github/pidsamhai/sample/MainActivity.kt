@@ -12,13 +12,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val owner = "Pidsamhai"
-        val repo = "release_file_test"
+        val owner = "owner" // Owner Name
+        val repo = "repository" // Repository name
         val currentVersion = BuildConfig.VERSION_NAME
         val gitRelease = GitRelease(this, owner, repo, currentVersion).apply {
             loading = true
-            title = "Massage Test"
-            massage = "Title Test"
+            checksum = true
         }
         gitRelease.checkNewVersion()
         checkVersion.setOnClickListener {
