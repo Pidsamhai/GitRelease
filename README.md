@@ -1,4 +1,5 @@
 # GitRelease
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b10bd3921d5f44d893578f8a8249184b)](https://app.codacy.com/gh/Pidsamhai/GitRelease?utm_source=github.com&utm_medium=referral&utm_content=Pidsamhai/GitRelease&utm_campaign=Badge_Grade_Dashboard)
 [![](https://jitpack.io/v/Pidsamhai/GitRelease.svg)](https://jitpack.io/#Pidsamhai/GitRelease)
 
 ## License
