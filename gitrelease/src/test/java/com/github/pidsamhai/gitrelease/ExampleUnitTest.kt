@@ -1,6 +1,6 @@
-package com.github.pidsamhai.sample
+package com.github.pidsamhai.gitrelease
 
-import org.junit.Assert.assertEquals
+import org.junit.Assert.*
 import org.junit.Test
 
 /**

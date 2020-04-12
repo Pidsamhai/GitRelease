@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="gitRelease_defaultMinMax">0 / 0</string>
+    <string name="gitRelease_update">Update</string>
+    <string name="gitRelease_cancel">Cancel</string>
+    <string name="gitRelease_defaultPercent">0%</string>
+    <string name="gitRelease_checkTitle">CheckSum</string>
+    <string name="gitRelease_checkMassage">checking…</string>
+    <string name="gitRelease_update_massage">update inprogress, don\'t close dialog!</string>
+</resources>
