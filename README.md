@@ -2,13 +2,15 @@
 <p align="center">
 <a href="https://www.codacy.com/gh/Pidsamhai/GitRelease?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Pidsamhai/GitRelease&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/90a5f1b1916b49ddaa30aac59c749bf3"/></a>
 <a href="https://jitpack.io/#Pidsamhai/GitRelease/"> <img src="https://jitpack.io/v/Pidsamhai/GitRelease.svg" /></a>
-<a href="https://kotlinlang.org"> <img src="https://img.shields.io/badge/Kotlin-1.3.71-blue.svg" /> </a>
+<a href="https://kotlinlang.org">&nbsp<img src="https://img.shields.io/badge/Kotlin-1.3.71-blue.svg" /> </a>
+<a href="https://github.com/Pidsamhai/GitRelease/blob/master/License.txt">&nbsp<img alt="GitHub" src="https://img.shields.io/github/license/Pidsamhai/GitRelease"></a>
 </p>
 <p align="center">
 <img src="./art/vdo.gif" height="600" />
 </p>
 
 ## Jitpack
+
 ```kotlin
 allprojects {
   repositories {
@@ -17,6 +19,7 @@ allprojects {
   }
 }
 ```
+
 ```kotlin
 dependencies {
   implementation 'com.github.Pidsamhai:GitRelease::<latest-version>'
@@ -24,13 +27,18 @@ dependencies {
   implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.5'
 }
 ```
+
 ## Setup
+
 Permission AndroidManifest.xml
+
 ```xml
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
 ```
+
 Add file provider in application tag
+
 ```xml
 <provider
             android:authorities="{Your package name}.provider" 
@@ -42,14 +50,18 @@ Add file provider in application tag
                 android:resource="@xml/filepath"/>
 </provider>
 ```
+
 filepath.xml   res > xml
+
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
     <external-files-path name="files" path="." />
 </paths>
 ```
+
 ## Quick start
+
 ```kotlin
 class MainActivity : AppCompatActivity() {
 
@@ -73,8 +85,10 @@ class MainActivity : AppCompatActivity() {
 ```
 
 ## Checksum template
+
 - support md5,sha1,sha256
 - If you don't want set checksum = false
+
 ```json
 {
   "algorithm": "sha256",
@@ -87,14 +101,19 @@ class MainActivity : AppCompatActivity() {
 ```
 
 ### Changelog
+
 #### v0.1-alpha
+
 - initial release
+
 #### v0.2-beta
+
 - use [Markdown View](https://github.com/mukeshsolanki/MarkdownView-Android). You can use MarkDown template for changelog massage.
 - add checksum support
 
 ## License
-```
+
+```text
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
                     Version 2, December 2004
 
