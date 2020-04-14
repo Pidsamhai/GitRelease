@@ -86,8 +86,8 @@ class MainActivity : AppCompatActivity() {
 
 ## Checksum template
 
-- support md5,sha1,sha256
-- If you don't want set checksum = false
+*   support md5,sha1,sha256
+*   If you don't want set checksum = false
 
 ```json
 {
@@ -104,12 +104,12 @@ class MainActivity : AppCompatActivity() {
 
 #### v0.1-alpha
 
-- initial release
+*   initial release
 
 #### v0.2-beta
 
-- use [Markdown View](https://github.com/mukeshsolanki/MarkdownView-Android). You can use MarkDown template for changelog massage.
-- add checksum support
+*   use [Markdown View](https://github.com/mukeshsolanki/MarkdownView-Android). You can use MarkDown template for changelog massage.
+*   add checksum support
 
 ## License
 
