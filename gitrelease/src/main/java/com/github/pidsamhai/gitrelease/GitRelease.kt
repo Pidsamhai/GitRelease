@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.github.pidsamhai.gitrelease.api.GithubReleaseRepository
 import com.github.pidsamhai.gitrelease.util.FileUtil
@@ -128,15 +129,18 @@ class GitRelease(
             showLoading()
             val data = githubReleaseRepository.getReleaseVersion()
             hideLoading()
-            if (data.err == null) {
+            if (data.err == null && data.newVersion) {
                 updateData = data
                 releaseMassage = data.version + "  [size ${data.size.toString()} mb]"
                 body = data.changeLog
                 try {
                     showRelease()
                 } catch (e: Exception) {
+                    showMessageLatestVersion()
                     e.printStackTrace()
                 }
+            } else {
+                showMessageLatestVersion()
             }
         }
     }
@@ -169,6 +173,9 @@ class GitRelease(
 
     }
 
+    private fun showMessageLatestVersion() {
+        Toast.makeText(activity, "You use latest version.", Toast.LENGTH_SHORT).show()
+    }
 
     private fun hideUpdate() {
         updateDialog.dismiss()
