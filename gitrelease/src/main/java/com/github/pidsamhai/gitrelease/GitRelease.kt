@@ -66,7 +66,7 @@ class GitRelease(
     private var updateDialogMinMax: TextView? = null
     private var updateDialogPercent: TextView? = null
 
-    private var checkReleaseJob:Job? = null
+    private var checkReleaseJob: Job? = null
 
 
     private fun createReleaseDialog() {
@@ -203,7 +203,7 @@ class GitRelease(
     private fun showLoading() {
         if (loading)
             createLoadingDialog()
-            loadingDialog?.show()
+        loadingDialog?.show()
     }
 
     private fun createLoadingDialog() {

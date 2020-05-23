@@ -14,7 +14,7 @@ internal class LoadingDialog(
     private val darkTheme: Boolean = true
 ) {
     private val type = DialogType.Loading
-    private val view = activity.layoutInflater.inflate(R.layout.dialog_release_new_version,null)
+    private val view = activity.layoutInflater.inflate(R.layout.dialog_release_new_version, null)
     private val title = view.findViewById<TextView>(R.id.title)
     private val mkView = view.findViewById<TextView>(R.id.t_mk_render)
     private val message = view.findViewById<TextView>(R.id.massage)
@@ -23,6 +23,7 @@ internal class LoadingDialog(
         activity as Context,
         R.style.AlertDialogLight
     )
+
     fun build(): AlertDialog {
         title.text = activity.getString(R.string.gitRelease_checkTitle)
         message.text = activity.getString(R.string.gitRelease_checkMassage)
@@ -41,7 +42,7 @@ internal class LoadingDialog(
     }
 
     private fun setTheme() {
-        if(darkTheme) {
+        if (darkTheme) {
             title.setTextColor(Color.WHITE)
             title.setTextColor(Color.WHITE)
         }
