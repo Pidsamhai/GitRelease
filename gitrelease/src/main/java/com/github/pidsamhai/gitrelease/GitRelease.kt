@@ -2,17 +2,19 @@ package com.github.pidsamhai.gitrelease
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.util.Log
-import android.view.View
+import android.graphics.Color
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import com.github.pidsamhai.gitrelease.api.GetReleaseResult
 import com.github.pidsamhai.gitrelease.api.GithubReleaseRepository
+import com.github.pidsamhai.gitrelease.api.OnDownloadListener
+import com.github.pidsamhai.gitrelease.listener.OnCheckReleaseListener
+import com.github.pidsamhai.gitrelease.ui.*
 import com.github.pidsamhai.gitrelease.util.FileUtil
 import com.github.pidsamhai.gitrelease.util.installApk
 import com.github.pidsamhai.gitrelease.util.validateApk
-import com.mukesh.MarkdownView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -21,80 +23,75 @@ import java.io.File
 import kotlin.coroutines.CoroutineContext
 
 @SuppressLint("InflateParams")
+const val TAG = "GitRelease"
+
 class GitRelease(
     private val activity: Activity,
     owner: String,
     repo: String,
-    currentVersion: String
-) : CoroutineScope {
+    currentVersion: String,
+    private val onCheckReleaseListener: OnCheckReleaseListener
+) : CoroutineScope, DialogListener {
     private val job = Job()
     override val coroutineContext: CoroutineContext
         get() = job + Dispatchers.Main
+
+    // Setting
     var loading: Boolean = true
-    private var releaseDialog: AlertDialog
-    private var loadingDialog: AlertDialog
-    private var updateDialog: AlertDialog
-    var title: String = "Checking new version..."
-    var massage: String = "Loading..."
-    var releaseTitle = "New version !!"
-    var releaseMassage: String? = ""
+    var darkTheme: Boolean = false
     var checksum: Boolean = true
+    var progressColor: Int = Color.GREEN
+
+    // Dialog
+    private var releaseMassage: String? = ""
+    private var releaseDialog: AlertDialog? = null
+    private var loadingDialog: AlertDialog? = null
+    private var updateDialog: AlertDialog? = null
     private var body: String? = ""
+
+    // Repository
     private val githubReleaseRepository: GithubReleaseRepository =
         GithubReleaseRepository(owner, repo, currentVersion)
+
+    // Download Path
     private val downloadFilepath: File? = FileUtil(
         activity
     ).downloadFilePath
-    private var updateData: UpdateData? = null
-    private val releaseView: View =
-        activity.layoutInflater.inflate(R.layout.dialog_release_new_version, null)
-    private val updateView: View =
-        activity.layoutInflater.inflate(R.layout.dialog_update_progress, null)
-    private val updateDialogProgress: ProgressBar = updateView.findViewById(R.id.progress)
-    private val updateDialogMinMax: TextView = updateView.findViewById(R.id.minMax)
-    private val updateDialogPercent: TextView = updateView.findViewById(R.id.percent)
-    private val updateDialogMassage: TextView = updateView.findViewById(R.id.massage)
-    private val updateDialogTitle: TextView = updateView.findViewById(R.id.title)
-    private val releaseDialogTitle: TextView = releaseView.findViewById(R.id.title)
-    private val releaseDialogMassage: TextView = releaseView.findViewById(R.id.massage)
-    private val releaseDialogMarkdownView: MarkdownView = releaseView.findViewById(R.id.mkView)
 
-    init {
-        releaseDialog = AlertDialog.Builder(activity)
-            .setView(releaseView)
-            .setPositiveButton(R.string.gitRelease_update) { _, _ ->
-                downloadUpdate()
-            }
-            .setNegativeButton(R.string.gitRelease_cancel, null)
-            .create()
-        releaseDialog.setOnShowListener {
-            releaseDialogTitle.text = releaseTitle
-            releaseDialogMassage.text = releaseMassage
-            releaseDialogMarkdownView.setMarkDownText(body)
+    // Call back Data When Success
+    private var updateData: GetReleaseResult.SuccessNewVersion? = null
+
+    // Update Dialog
+    private var updateDialogProgress: ProgressBar? = null
+    private var updateDialogMinMax: TextView? = null
+    private var updateDialogPercent: TextView? = null
+
+    private var checkReleaseJob: Job? = null
+
+
+    private fun createReleaseDialog() {
+        if (releaseDialog != null) {
+            releaseDialog = null
         }
-        loadingDialog = AlertDialog.Builder(activity)
-            .setTitle(title)
-            .setMessage(massage)
-            .setCancelable(false)
-            .setNegativeButton(R.string.gitRelease_cancel) { _, _ ->
-                cancelJob()
-            }
-            .create()
-        updateDialog = AlertDialog.Builder(activity)
-            .setView(updateView)
-            .setCancelable(false)
-            .setNegativeButton(R.string.gitRelease_cancel) { _, _ ->
-                cancelDownload()
-            }
-            .create()
+        releaseDialog = ChangeLogDialog(activity, this, darkTheme, progressColor).apply {
+            setMassage(releaseMassage ?: "Massage")
+            setChangLog(body ?: "~~Body~~")
+        }.build()
+    }
+
+    private fun createUpdateDialog() {
+        if (updateDialog == null) {
+            updateDialog = UpdateDialog(activity, this, darkTheme, progressColor)
+                .apply {
+                    updateDialogProgress = getProgressView()
+                    updateDialogMinMax = getMinMaxView()
+                    updateDialogPercent = getPercentView()
+                }.build()
+        }
     }
 
     private fun resetUpdateDialogDetail() {
-        updateDialogProgress.isIndeterminate = false
-        activity.resources.also {
-            updateDialogTitle.text = it.getString(R.string.gitRelease_update)
-            updateDialogMassage.text = it.getString(R.string.gitRelease_update_massage)
-        }
+        updateDialogProgress?.isIndeterminate = false
     }
 
 
@@ -104,89 +101,96 @@ class GitRelease(
         updateData?.let {
             showUpdate()
             githubReleaseRepository.downloadFile(
-                it.apkName!!,
-                it.downloadUrl!!,
-                downloadFilepath!!
-            ) { percent, current, fileSize, success, file ->
-                launch(Dispatchers.Main) {
-                    updateDialogProgress.progress = percent
-                    updateDialogMinMax.text = "$current / $fileSize"
-                    updateDialogPercent.text = "$percent% "
-                }
-                if (success) {
-                    if (checksum)
-                        checksum(file)
-                    else
-                        installApk(activity, file)
-                    hideUpdate()
-                }
-            }
+                it.apkName,
+                it.downloadUrl,
+                downloadFilepath!!,
+                object : OnDownloadListener {
+                    override fun onError(e: Exception) {}
+                    override fun onSuccess(filePath: File) {
+                        if (checksum)
+                            checksum(filePath)
+                        else
+                            installApk(activity, filePath)
+                        hideUpdate()
+                    }
+
+                    override fun onProgress(percent: Int, total: Long) {
+                        launch(Dispatchers.Main) {
+                            updateDialogProgress?.progress = percent
+                            updateDialogMinMax?.text = "$percent / $total"
+                            updateDialogPercent?.text = "$percent%"
+                        }
+                    }
+                })
         }
     }
 
     fun checkNewVersion() {
-        launch(Dispatchers.Main) {
+        checkReleaseJob = launch(Dispatchers.Main) {
             showLoading()
             val data = githubReleaseRepository.getReleaseVersion()
             hideLoading()
-            if (data.err == null && data.newVersion) {
-                updateData = data
-                releaseMassage = data.version + "  [size ${data.size.toString()} mb]"
-                body = data.changeLog
-                try {
+            when (data) {
+                is GetReleaseResult.SuccessNewVersion -> {
+                    updateData = data
+                    releaseMassage = data.version + "  [size ${data.size} mb]"
+                    body = data.changeLog
                     showRelease()
-                } catch (e: Exception) {
-                    showMessageLatestVersion()
-                    e.printStackTrace()
                 }
-            } else {
-                showMessageLatestVersion()
+                is GetReleaseResult.Error -> {
+                    showErrorMessage(data.error.message ?: "Error")
+                    data.error.printStackTrace()
+                }
+                is GetReleaseResult.SuccessLatestVersion -> {
+                    showMessageLatestVersion()
+                }
             }
+            onCheckReleaseListener.onComplete()
         }
     }
 
+
     private fun checksum(apk: File) {
-        updateDialogProgress.isIndeterminate = true
-        updateDialogMassage.text = activity.resources.getString(R.string.gitRelease_checkMassage)
-        updateDialogTitle.text = activity.resources.getString(R.string.gitRelease_checkTitle)
+        updateDialogProgress?.isIndeterminate = true
+        updateData?.let {
+        }
         updateData?.let {
             githubReleaseRepository.downloadFile(
-                it.checksumName!!,
-                it.checksumUrl!!,
-                downloadFilepath!!
-            ) { _, _, _, success, file ->
-                if (success) {
-                    hideUpdate()
-                    val v = validateApk(
-                        apk,
-                        file
-                    )
-                    Log.e("checksum", "$v")
-                    if (v)
-                        installApk(
-                            activity,
-                            apk
-                        )
-                }
-            }
-        }
+                it.checksumName,
+                it.checksumUrl,
+                downloadFilepath!!,
+                object : OnDownloadListener {
+                    override fun onError(e: Exception) {}
+                    override fun onSuccess(filePath: File) {
+                        if (validateApk(apk, filePath)) {
+                            installApk(activity, apk)
+                        }
+                    }
 
+                    override fun onProgress(percent: Int, total: Long) {}
+                })
+        }
     }
 
     private fun showMessageLatestVersion() {
         Toast.makeText(activity, "You use latest version.", Toast.LENGTH_SHORT).show()
     }
 
+    private fun showErrorMessage(msg: String) {
+        Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show()
+    }
+
     private fun hideUpdate() {
-        updateDialog.dismiss()
+        updateDialog?.dismiss()
     }
 
     private fun showUpdate() {
-        updateDialog.show()
+        createUpdateDialog()
+        updateDialog?.show()
     }
 
     private fun cancelJob() {
-        job.cancel()
+        checkReleaseJob?.cancel()
     }
 
     private fun cancelDownload() {
@@ -195,15 +199,48 @@ class GitRelease(
 
     private fun hideLoading() {
         if (loading)
-            loadingDialog.dismiss()
+            loadingDialog?.dismiss()
     }
 
     private fun showLoading() {
         if (loading)
-            loadingDialog.show()
+            createLoadingDialog()
+        loadingDialog?.show()
+    }
+
+    private fun createLoadingDialog() {
+        if (loadingDialog == null)
+            loadingDialog = LoadingDialog(activity, this, darkTheme).build()
     }
 
     private fun showRelease() {
-        releaseDialog.show()
+        createReleaseDialog()
+        releaseDialog?.show()
     }
+
+    override fun onNegativeClick(dialogType: DialogType) {
+        when (dialogType) {
+            is DialogType.Update -> {
+                cancelDownload()
+                onCheckReleaseListener.onCancelDownload()
+            }
+            is DialogType.Loading -> {
+                cancelJob()
+                onCheckReleaseListener.onCancel()
+            }
+            is DialogType.ChangeLog -> {
+                onCheckReleaseListener.onCancelUpdate()
+            }
+        }
+    }
+
+    override fun onPositiveClick(dialogType: DialogType) {
+        when (dialogType) {
+            is DialogType.ChangeLog -> {
+                downloadUpdate()
+            }
+        }
+    }
+
+    override fun onCancelClick(dialogType: DialogType) {}
 }

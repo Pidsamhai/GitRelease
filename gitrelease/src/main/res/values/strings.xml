@@ -7,4 +7,7 @@
     <string name="gitRelease_checkTitle">CheckSum</string>
     <string name="gitRelease_checkMassage">checking…</string>
     <string name="gitRelease_update_massage">update inprogress, don\'t close dialog!</string>
+    <string name="gitRelease_checking_new_version">Checking new version…</string>
+    <string name="gitRelease_loading">Loading…</string>
+    <string name="gitRelease_new_version">New version !!</string>
 </resources>

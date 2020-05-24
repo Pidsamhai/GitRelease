@@ -72,9 +72,24 @@ class MainActivity : AppCompatActivity() {
         val owner = "owner" // Owner Name
         val repo = "repository" // Repository name
         val currentVersion = BuildConfig.VERSION_NAME
-        val gitRelease = GitRelease(this, owner, repo, currentVersion).apply {
+        val gitRelease = GitRelease(this, owner, repo, currentVersion,object : OnCheckReleaseListener {
+            override fun onComplete() {
+                Log.i(TAG, "onComplete: ")
+            }
+            override fun onCancel() {
+                Log.i(TAG, "onCancel: ")
+            }
+            override fun onCancelDownload() {
+                Log.i(TAG, "onCancelDownload: ")
+            }
+            override fun onCancelUpdate() {
+                Log.i(TAG, "onCancelUpdate: ")
+            }
+        }).apply {
             loading = true
             checksum = true
+            darkTheme = false
+            progressColor = Color.YELLOW
         }
         gitRelease.checkNewVersion()
         checkVersion.setOnClickListener {
@@ -102,20 +117,24 @@ class MainActivity : AppCompatActivity() {
 
 ### Changelog
 
-#### v0.1-alpha
-
-*   initial release
-
-#### v0.2-beta
-
-*   use [Markdown View](https://github.com/mukeshsolanki/MarkdownView-Android). You can use MarkDown template for changelog massage.
-*   add checksum support
-
-### v0.2.1-beta
+### 0.2.1-beta
 
 *   Fix missing new version check
 *   add Toast massage for latest version
 *   fix markdown lint check (codacy)
+* 
+#### 0.2-beta
+
+*   use [Markdown View](https://github.com/mukeshsolanki/MarkdownView-Android). You can use MarkDown template for changelog massage.
+*   add checksum support
+
+#### 0.1-alpha
+
+*   initial release
+
+
+
+
 
 ## License
 
