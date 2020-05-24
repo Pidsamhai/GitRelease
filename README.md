@@ -117,6 +117,10 @@ class MainActivity : AppCompatActivity() {
 
 ### Changelog
 
+### 0.2.2-beta-hotfix-1
+
+*  fix listener
+
 ### 0.2.2-beta
 
 *  add Dark Theme
