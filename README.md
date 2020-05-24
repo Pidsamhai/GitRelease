@@ -117,12 +117,20 @@ class MainActivity : AppCompatActivity() {
 
 ### Changelog
 
+### 0.2.2-beta
+
+*  add Dark Theme
+*  add check version callback
+*  fix cancel check version
+*  remove [Markdown View](https://github.com/mukeshsolanki/MarkdownView-Android)
+*  render markdown with [MarkWon](https://github.com/noties/Markwon)
+
 ### 0.2.1-beta
 
 *   Fix missing new version check
 *   add Toast massage for latest version
 *   fix markdown lint check (codacy)
-* 
+
 #### 0.2-beta
 
 *   use [Markdown View](https://github.com/mukeshsolanki/MarkdownView-Android). You can use MarkDown template for changelog massage.
