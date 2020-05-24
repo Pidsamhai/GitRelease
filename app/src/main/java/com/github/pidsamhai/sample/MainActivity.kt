@@ -12,7 +12,7 @@ import kotlin.math.log
 
 val TAG = MainActivity::class.java.simpleName
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnCheckReleaseListener {
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,28 +21,31 @@ class MainActivity : AppCompatActivity() {
         val owner = "Pidsamhai" // Owner Name
         val repo = "release_file_test" // Repository name
         val currentVersion = BuildConfig.VERSION_NAME
-        val gitRelease = GitRelease(this, owner, repo, currentVersion,object : OnCheckReleaseListener {
-            override fun onComplete() {
-                Log.i(TAG, "onComplete: ")
-            }
-            override fun onCancel() {
-                Log.i(TAG, "onCancel: ")
-            }
-            override fun onCancelDownload() {
-                Log.i(TAG, "onCancelDownload: ")
-            }
-            override fun onCancelUpdate() {
-                Log.i(TAG, "onCancelUpdate: ")
-            }
-        }).apply {
+        val gitRelease = GitRelease(this, owner, repo, currentVersion).apply {
             loading = true
             checksum = true
             darkTheme = false
             progressColor = Color.YELLOW
         }
-        gitRelease.checkNewVersion()
+        gitRelease.checkNewVersion(this)
         checkVersion.setOnClickListener {
-            gitRelease.checkNewVersion()
+            gitRelease.checkNewVersion(this)
         }
+    }
+
+    override fun onComplete() {
+        Log.i(TAG, "onComplete: ")
+    }
+
+    override fun onCancel() {
+        Log.i(TAG, "onCancel: ")
+    }
+
+    override fun onCancelDownload() {
+        Log.i(TAG, "onCancelDownload: ")
+    }
+
+    override fun onCancelUpdate() {
+        Log.i(TAG, "onCancelUpdate: ")
     }
 }
