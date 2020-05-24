@@ -26,11 +26,10 @@ import kotlin.coroutines.CoroutineContext
 const val TAG = "GitRelease"
 
 class GitRelease(
-    private val activity: Activity,
-    owner: String,
-    repo: String,
-    currentVersion: String,
-    private val onCheckReleaseListener: OnCheckReleaseListener
+        private val activity: Activity,
+        owner: String,
+        repo: String,
+        currentVersion: String
 ) : CoroutineScope, DialogListener {
     private val job = Job()
     override val coroutineContext: CoroutineContext
@@ -51,11 +50,11 @@ class GitRelease(
 
     // Repository
     private val githubReleaseRepository: GithubReleaseRepository =
-        GithubReleaseRepository(owner, repo, currentVersion)
+            GithubReleaseRepository(owner, repo, currentVersion)
 
     // Download Path
     private val downloadFilepath: File? = FileUtil(
-        activity
+            activity
     ).downloadFilePath
 
     // Call back Data When Success
@@ -67,6 +66,9 @@ class GitRelease(
     private var updateDialogPercent: TextView? = null
 
     private var checkReleaseJob: Job? = null
+
+    // Global listener
+    private var listener: OnCheckReleaseListener? = null
 
 
     private fun createReleaseDialog() {
@@ -82,11 +84,11 @@ class GitRelease(
     private fun createUpdateDialog() {
         if (updateDialog == null) {
             updateDialog = UpdateDialog(activity, this, darkTheme, progressColor)
-                .apply {
-                    updateDialogProgress = getProgressView()
-                    updateDialogMinMax = getMinMaxView()
-                    updateDialogPercent = getPercentView()
-                }.build()
+                    .apply {
+                        updateDialogProgress = getProgressView()
+                        updateDialogMinMax = getMinMaxView()
+                        updateDialogPercent = getPercentView()
+                    }.build()
         }
     }
 
@@ -101,31 +103,33 @@ class GitRelease(
         updateData?.let {
             showUpdate()
             githubReleaseRepository.downloadFile(
-                it.apkName,
-                it.downloadUrl,
-                downloadFilepath!!,
-                object : OnDownloadListener {
-                    override fun onError(e: Exception) {}
-                    override fun onSuccess(filePath: File) {
-                        if (checksum)
-                            checksum(filePath)
-                        else
-                            installApk(activity, filePath)
-                        hideUpdate()
-                    }
-
-                    override fun onProgress(percent: Int, total: Long) {
-                        launch(Dispatchers.Main) {
-                            updateDialogProgress?.progress = percent
-                            updateDialogMinMax?.text = "$percent / $total"
-                            updateDialogPercent?.text = "$percent%"
+                    it.apkName,
+                    it.downloadUrl,
+                    downloadFilepath!!,
+                    object : OnDownloadListener {
+                        override fun onError(e: Exception) {}
+                        override fun onSuccess(filePath: File) {
+                            if (checksum)
+                                checksum(filePath)
+                            else
+                                installApk(activity, filePath)
+                            hideUpdate()
                         }
-                    }
-                })
+
+                        override fun onProgress(percent: Int, total: Long) {
+                            launch(Dispatchers.Main) {
+                                updateDialogProgress?.progress = percent
+                                updateDialogMinMax?.text = "$percent / $total"
+                                updateDialogPercent?.text = "$percent%"
+                            }
+                        }
+                    })
         }
     }
 
-    fun checkNewVersion() {
+    fun checkNewVersion(onCheckReleaseListener: OnCheckReleaseListener) {
+        if (listener == null)
+            listener = onCheckReleaseListener
         checkReleaseJob = launch(Dispatchers.Main) {
             showLoading()
             val data = githubReleaseRepository.getReleaseVersion()
@@ -145,7 +149,7 @@ class GitRelease(
                     showMessageLatestVersion()
                 }
             }
-            onCheckReleaseListener.onComplete()
+            listener?.onComplete()
         }
     }
 
@@ -156,19 +160,19 @@ class GitRelease(
         }
         updateData?.let {
             githubReleaseRepository.downloadFile(
-                it.checksumName,
-                it.checksumUrl,
-                downloadFilepath!!,
-                object : OnDownloadListener {
-                    override fun onError(e: Exception) {}
-                    override fun onSuccess(filePath: File) {
-                        if (validateApk(apk, filePath)) {
-                            installApk(activity, apk)
+                    it.checksumName,
+                    it.checksumUrl,
+                    downloadFilepath!!,
+                    object : OnDownloadListener {
+                        override fun onError(e: Exception) {}
+                        override fun onSuccess(filePath: File) {
+                            if (validateApk(apk, filePath)) {
+                                installApk(activity, apk)
+                            }
                         }
-                    }
 
-                    override fun onProgress(percent: Int, total: Long) {}
-                })
+                        override fun onProgress(percent: Int, total: Long) {}
+                    })
         }
     }
 
@@ -222,14 +226,14 @@ class GitRelease(
         when (dialogType) {
             is DialogType.Update -> {
                 cancelDownload()
-                onCheckReleaseListener.onCancelDownload()
+                listener?.onCancelDownload()
             }
             is DialogType.Loading -> {
                 cancelJob()
-                onCheckReleaseListener.onCancel()
+                listener?.onCancel()
             }
             is DialogType.ChangeLog -> {
-                onCheckReleaseListener.onCancelUpdate()
+                listener?.onCancelUpdate()
             }
         }
     }
