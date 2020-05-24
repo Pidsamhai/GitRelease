@@ -59,7 +59,7 @@ class GitRelease(
     ).downloadFilePath
 
     // Call back Data When Success
-    private var updateData: GetReleaseResult.Success? = null
+    private var updateData: GetReleaseResult.SuccessNewVersion? = null
 
     // Update Dialog
     private var updateDialogProgress: ProgressBar? = null
@@ -105,9 +105,7 @@ class GitRelease(
                 it.downloadUrl,
                 downloadFilepath!!,
                 object : OnDownloadListener {
-                    override fun onError(e: Exception) {
-                    }
-
+                    override fun onError(e: Exception) {}
                     override fun onSuccess(filePath: File) {
                         if (checksum)
                             checksum(filePath)
@@ -133,15 +131,18 @@ class GitRelease(
             val data = githubReleaseRepository.getReleaseVersion()
             hideLoading()
             when (data) {
-                is GetReleaseResult.Success -> {
+                is GetReleaseResult.SuccessNewVersion -> {
                     updateData = data
                     releaseMassage = data.version + "  [size ${data.size} mb]"
                     body = data.changeLog
                     showRelease()
                 }
                 is GetReleaseResult.Error -> {
-                    showMessageLatestVersion()
+                    showErrorMessage(data.error.message ?: "Error")
                     data.error.printStackTrace()
+                }
+                is GetReleaseResult.SuccessLatestVersion -> {
+                    showMessageLatestVersion()
                 }
             }
             onCheckReleaseListener.onComplete()
@@ -159,23 +160,24 @@ class GitRelease(
                 it.checksumUrl,
                 downloadFilepath!!,
                 object : OnDownloadListener {
-                    override fun onError(e: Exception) {
-                    }
-
+                    override fun onError(e: Exception) {}
                     override fun onSuccess(filePath: File) {
                         if (validateApk(apk, filePath)) {
                             installApk(activity, apk)
                         }
                     }
 
-                    override fun onProgress(percent: Int, total: Long) {
-                    }
+                    override fun onProgress(percent: Int, total: Long) {}
                 })
         }
     }
 
     private fun showMessageLatestVersion() {
         Toast.makeText(activity, "You use latest version.", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showErrorMessage(msg: String) {
+        Toast.makeText(activity, msg, Toast.LENGTH_SHORT).show()
     }
 
     private fun hideUpdate() {
@@ -240,7 +242,5 @@ class GitRelease(
         }
     }
 
-    override fun onCancelClick(dialogType: DialogType) {
-
-    }
+    override fun onCancelClick(dialogType: DialogType) {}
 }

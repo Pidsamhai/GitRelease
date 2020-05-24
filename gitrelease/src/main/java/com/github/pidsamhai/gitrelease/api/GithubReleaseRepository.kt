@@ -7,7 +7,10 @@ import com.github.kittinunf.fuel.core.requests.CancellableRequest
 import com.github.kittinunf.fuel.coroutines.awaitObjectResponse
 import com.github.kittinunf.fuel.gson.gsonDeserializerOf
 import com.github.kittinunf.fuel.httpGet
+import com.github.pidsamhai.gitrelease.response.github.Asset
 import com.github.pidsamhai.gitrelease.response.github.GitReleaseResponse
+import com.github.pidsamhai.gitrelease.util.reGexApkFileType
+import com.github.pidsamhai.gitrelease.util.reGexCheckSumFile
 import java.io.File
 
 internal class GithubReleaseRepository(
@@ -21,23 +24,34 @@ internal class GithubReleaseRepository(
 
     suspend fun getReleaseVersion(): GetReleaseResult {
         return try {
-            val (req, _, resObj) = repositoryUrl
+            val (_, _, resObj) = repositoryUrl
                 .httpGet()
                 .awaitObjectResponse(gsonDeserializerOf(Array<GitReleaseResponse>::class.java))
             Log.i(ContentValues.TAG, "getRelease: $resObj")
-            val assets = resObj[0].assets!![0]
-            val checksum = resObj[0].assets!![1]
-            val baseObj = resObj[0]
-            GetReleaseResult.Success(
-                apkName = assets!!.name!!,
-                downloadUrl = assets.browserDownloadUrl!!,
-                version = baseObj.tagName!!,
-                size = (assets.size!! / 1024) / 1024,
-                changeLog = baseObj.body!!,
-                checksumUrl = checksum!!.browserDownloadUrl!!,
-                newVersion = currentVersion != baseObj.tagName,
-                checksumName = checksum.name!!
-            )
+            val baseObj: GitReleaseResponse = resObj[0]
+            val apkAsset: Asset? = baseObj.assets?.find {
+                reGexApkFileType.find(it?.name ?: "") != null
+            }
+            val checksumAsset: Asset? = baseObj.assets?.find {
+                reGexCheckSumFile.matches(it?.name ?: "")
+            }
+            val isNew = currentVersion != baseObj.tagName
+            if (!isNew) {
+                GetReleaseResult.SuccessLatestVersion
+            } else if (apkAsset != null && checksumAsset != null && isNew) {
+                GetReleaseResult.SuccessNewVersion(
+                    apkName = apkAsset.name!!,
+                    downloadUrl = apkAsset.browserDownloadUrl!!,
+                    version = baseObj.tagName!!,
+                    size = (apkAsset.size!! / 1024) / 1024,
+                    changeLog = baseObj.body!!,
+                    checksumUrl = checksumAsset.browserDownloadUrl!!,
+                    checksumName = checksumAsset.name!!
+                )
+            } else {
+                GetReleaseResult.Error(Exception("No file Assets"))
+            }
+
         } catch (e: Exception) {
             e.printStackTrace()
             GetReleaseResult.Error(e)
@@ -72,20 +86,21 @@ internal class GithubReleaseRepository(
 }
 
 internal sealed class GetReleaseResult {
-    data class Success(
+    data class SuccessNewVersion(
         val apkName: String,
         val version: String,
         val downloadUrl: String,
         val size: Long,
         val changeLog: String,
         val checksumUrl: String,
-        val checksumName: String,
-        val newVersion: Boolean
+        val checksumName: String
     ) : GetReleaseResult()
 
     data class Error(
         val error: Exception
     ) : GetReleaseResult()
+
+    object SuccessLatestVersion : GetReleaseResult()
 }
 
 internal interface OnDownloadListener {
