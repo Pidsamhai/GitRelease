@@ -6,8 +6,6 @@
         <item name="android:headerDividersEnabled">true</item>
         <item name="android:typeface">normal</item>
         <item name="android:background">@color/dark_grey_alpha8</item>
-<!--        <item name="android:buttonBarNegativeButtonStyle">@style/NegativeButtonStyleDark</item>-->
-<!--        <item name="android:buttonBarPositiveButtonStyle">@style/PositiveButtonStyleDark</item>-->
     </style>
 
     <style name="AlertDialogLight" parent="Theme.AppCompat.Dialog.Alert">

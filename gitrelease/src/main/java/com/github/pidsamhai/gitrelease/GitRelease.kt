@@ -75,7 +75,7 @@ class GitRelease(
         if (releaseDialog != null) {
             releaseDialog = null
         }
-        releaseDialog = ChangeLogDialog(activity, this, darkTheme, progressColor).apply {
+        releaseDialog = ReleaseDialog(activity, this, darkTheme, progressColor).apply {
             setMassage(releaseMassage ?: "Massage")
             setChangLog(body ?: "~~Body~~")
         }.build()
@@ -127,7 +127,7 @@ class GitRelease(
         }
     }
 
-    fun checkNewVersion(onCheckReleaseListener: OnCheckReleaseListener) {
+    fun checkNewVersion(onCheckReleaseListener: OnCheckReleaseListener? = null) {
         if (listener == null)
             listener = onCheckReleaseListener
         checkReleaseJob = launch(Dispatchers.Main) {
