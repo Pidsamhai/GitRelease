@@ -44,7 +44,7 @@ internal class LoadingDialog(
     private fun setTheme() {
         if (darkTheme) {
             title.setTextColor(Color.WHITE)
-            title.setTextColor(Color.WHITE)
+            message.setTextColor(Color.WHITE)
         }
     }
 }
