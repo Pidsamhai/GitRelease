@@ -101,6 +101,7 @@ class MainActivity : AppCompatActivity() {
 
 ## Checksum template
 
+*   checksum.json
 *   support md5,sha1,sha256
 *   If you don't want set checksum = false
 
@@ -116,6 +117,11 @@ class MainActivity : AppCompatActivity() {
 ```
 
 ### Changelog
+
+### 0.2.3-beta
+
+* update listener
+* fix message color loading dialog
 
 ### 0.2.2-beta-hotfix-1
 

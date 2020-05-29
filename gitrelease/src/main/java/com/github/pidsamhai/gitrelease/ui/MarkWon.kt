@@ -8,8 +8,7 @@ import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
 import io.noties.markwon.image.coil.CoilImagesPlugin
 
 internal class MarkWon(
-    private val context: Context,
-    private val darkTheme: Boolean,
+    context: Context,
     progressColor: Int
 ) {
     private val builder = Markwon.builder(context)

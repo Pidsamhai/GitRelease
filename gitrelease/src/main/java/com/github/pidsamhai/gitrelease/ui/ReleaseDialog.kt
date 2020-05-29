@@ -14,11 +14,11 @@ interface DialogListener {
 }
 
 
-internal class ChangeLogDialog(
+internal class ReleaseDialog(
     private val activity: Activity,
     private val dialogListener: DialogListener,
     private val darkTheme: Boolean = true,
-    private val progressColor: Int
+    progressColor: Int
 ) {
     private val type = DialogType.ChangeLog
     private val builder: AlertDialog.Builder = if (darkTheme)
@@ -29,7 +29,7 @@ internal class ChangeLogDialog(
     private val view = activity.layoutInflater.inflate(R.layout.dialog_release_new_version, null)
     private val title = view.findViewById<TextView>(R.id.title)
     private val massage = view.findViewById<TextView>(R.id.massage)
-    private val markWon = MarkWon(activity as Context, darkTheme, progressColor).build()
+    private val markWon = MarkWon(activity as Context, progressColor).build()
     private val mkView = view.findViewById<TextView>(R.id.t_mk_render)
     fun build(): AlertDialog {
         title.text = activity.getString(R.string.gitRelease_new_version)
