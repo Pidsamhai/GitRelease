@@ -10,7 +10,6 @@ import androidx.appcompat.app.AlertDialog
 import com.github.pidsamhai.gitrelease.api.GetReleaseResult
 import com.github.pidsamhai.gitrelease.api.GithubReleaseRepository
 import com.github.pidsamhai.gitrelease.api.OnDownloadListener
-import com.github.pidsamhai.gitrelease.listener.OnCheckReleaseListener
 import com.github.pidsamhai.gitrelease.ui.*
 import com.github.pidsamhai.gitrelease.util.FileUtil
 import com.github.pidsamhai.gitrelease.util.installApk
@@ -247,4 +246,12 @@ class GitRelease(
     }
 
     override fun onCancelClick(dialogType: DialogType) {}
+
+    interface OnCheckReleaseListener {
+        fun onComplete()
+        fun onCancel()
+        fun onCancelDownload()
+        fun onCancelUpdate()
+    }
+
 }

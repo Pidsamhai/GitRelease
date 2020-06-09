@@ -6,13 +6,11 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.github.pidsamhai.gitrelease.GitRelease
-import com.github.pidsamhai.gitrelease.listener.OnCheckReleaseListener
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlin.math.log
 
 val TAG = MainActivity::class.java.simpleName
 
-class MainActivity : AppCompatActivity(), OnCheckReleaseListener {
+class MainActivity : AppCompatActivity(), GitRelease.OnCheckReleaseListener {
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -5,7 +5,7 @@ import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 @Keep
-data class Type(
+internal data class Type(
     @SerializedName("md5")
     val md5: String?,
     @SerializedName("sha1")

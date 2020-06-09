@@ -5,7 +5,7 @@ import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 @Keep
-data class Checksum(
+internal data class Checksum(
     @SerializedName("algorithm")
     val algorithm: String?,
     @SerializedName("type")
