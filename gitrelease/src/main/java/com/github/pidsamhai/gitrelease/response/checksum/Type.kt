@@ -1,9 +1,11 @@
 package com.github.pidsamhai.gitrelease.response.checksum
 
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
-data class Type(
+@Keep
+internal data class Type(
     @SerializedName("md5")
     val md5: String?,
     @SerializedName("sha1")

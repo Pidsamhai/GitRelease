@@ -22,7 +22,7 @@ allprojects {
 
 ```kotlin
 dependencies {
-  implementation 'com.github.Pidsamhai:GitRelease::<latest-version>'
+  implementation 'com.github.Pidsamhai:GitRelease:<latest-version>'
   // This project uses kotlinx-coroutines.
   implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.5'
 }
@@ -63,38 +63,41 @@ filepath.xml   res > xml
 ## Quick start
 
 ```kotlin
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), GitRelease.OnCheckReleaseListener {
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val owner = "owner" // Owner Name
-        val repo = "repository" // Repository name
+        val owner = "Pidsamhai" // Owner Name
+        val repo = "release_file_test" // Repository name
         val currentVersion = BuildConfig.VERSION_NAME
-        val gitRelease = GitRelease(this, owner, repo, currentVersion,object : OnCheckReleaseListener {
-            override fun onComplete() {
-                Log.i(TAG, "onComplete: ")
-            }
-            override fun onCancel() {
-                Log.i(TAG, "onCancel: ")
-            }
-            override fun onCancelDownload() {
-                Log.i(TAG, "onCancelDownload: ")
-            }
-            override fun onCancelUpdate() {
-                Log.i(TAG, "onCancelUpdate: ")
-            }
-        }).apply {
+        val gitRelease = GitRelease(this, owner, repo, currentVersion).apply {
             loading = true
             checksum = true
             darkTheme = false
             progressColor = Color.YELLOW
         }
-        gitRelease.checkNewVersion()
+        gitRelease.checkNewVersion(this)
         checkVersion.setOnClickListener {
             gitRelease.checkNewVersion()
         }
+    }
+
+    override fun onComplete() {
+        Log.i(TAG, "onComplete: ")
+    }
+
+    override fun onCancel() {
+        Log.i(TAG, "onCancel: ")
+    }
+
+    override fun onCancelDownload() {
+        Log.i(TAG, "onCancelDownload: ")
+    }
+
+    override fun onCancelUpdate() {
+        Log.i(TAG, "onCancelUpdate: ")
     }
 }
 ```
@@ -117,6 +120,10 @@ class MainActivity : AppCompatActivity() {
 ```
 
 ### Changelog
+
+### 0.2.4-beta
+
+* fix serialize error when enable minify
 
 ### 0.2.3-beta
 
