@@ -2,4 +2,5 @@
 <resources>
     <color name="dark_grey">#121212</color>
     <color name="dark_grey_alpha8">#282828</color>
+    <color name="bg_popup_transparent">#00000000</color>
 </resources>
