@@ -11,10 +11,10 @@ import com.github.pidsamhai.gitrelease.api.GithubReleaseRepository
 import com.github.pidsamhai.gitrelease.databinding.DialogReleaseBinding
 
 internal class GitReleaseDialog(
-    config: GitRelease.Config,
-    private val listener: GitRelease.OnCheckReleaseListener
+    config: GitRelease.Config
 ) : DialogFragment() {
 
+    var listener: GitRelease.OnCheckReleaseListener? = null
     private val repository = GithubReleaseRepository(config)
     private var viewModel: GitReleaseDialogViewModel? = null
 
@@ -41,11 +41,11 @@ internal class GitReleaseDialog(
         binding.vm = viewModel
         binding.btnCancelCheck.setOnClickListener {
             viewModel?.cancelCheckUpdate()
-            listener.onCancelCheckUpdate()
+            listener?.onCancelCheckUpdate()
             this.dismiss()
         }
         binding.btnCancelUpdate.setOnClickListener {
-            listener.onUpdateCancel()
+            listener?.onUpdateCancel()
             this.dismiss()
         }
         binding.btnOK.setOnClickListener {

@@ -25,10 +25,10 @@ class MainActivity : AppCompatActivity(), GitRelease.OnCheckReleaseListener {
             currentVersion,
             true
         )
-        val gitRelease = GitRelease(this, config, this)
-        gitRelease.checkUpdate()
+        val gitRelease = GitRelease(this, config)
+        gitRelease.checkUpdate(this)
         checkVersion.setOnClickListener {
-            gitRelease.checkUpdate()
+            gitRelease.checkUpdate(this)
         }
     }
 

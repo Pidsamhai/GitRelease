@@ -17,7 +17,7 @@ import java.io.File
 internal class DownloadDialog(
     private val repository: GithubReleaseRepository,
     private val newVersion: NewVersion,
-    private val listener: GitRelease.OnCheckReleaseListener
+    private val listener: GitRelease.OnCheckReleaseListener?
 ) : DialogFragment() {
 
     private var viewModel: DownloadDialogViewModel? = null

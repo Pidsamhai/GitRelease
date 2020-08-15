@@ -7,11 +7,12 @@ import androidx.appcompat.app.AppCompatActivity
 import com.github.pidsamhai.gitrelease.ui.GitReleaseDialog
 import java.io.File
 
-class GitRelease(private val activity: AppCompatActivity,config: Config, listener: OnCheckReleaseListener) {
+class GitRelease(private val activity: AppCompatActivity,config: Config) {
 
-    private val releaseDialog = GitReleaseDialog(config, listener)
+    private val releaseDialog = GitReleaseDialog(config)
 
-    fun checkUpdate() {
+    fun checkUpdate(listener: OnCheckReleaseListener? = null) {
+        releaseDialog.listener = listener
         releaseDialog.show(activity.supportFragmentManager, activity.javaClass.simpleName)
     }
 
