@@ -1,6 +1,7 @@
 package com.github.pidsamhai.gitrelease.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
@@ -8,14 +9,15 @@ import androidx.lifecycle.ViewModelProvider
 import com.github.pidsamhai.gitrelease.GitRelease
 import com.github.pidsamhai.gitrelease.R
 import com.github.pidsamhai.gitrelease.api.GithubReleaseRepository
+import com.github.pidsamhai.gitrelease.api.NewVersion
 import com.github.pidsamhai.gitrelease.databinding.DialogReleaseBinding
 
 internal class GitReleaseDialog(
-    config: GitRelease.Config
+    private val repository: GithubReleaseRepository,
+    var newVersion: NewVersion? = null
 ) : DialogFragment() {
 
     var listener: GitRelease.OnCheckReleaseListener? = null
-    private val repository = GithubReleaseRepository(config)
     private var viewModel: GitReleaseDialogViewModel? = null
 
     override fun onCreateView(
@@ -37,7 +39,17 @@ internal class GitReleaseDialog(
                 this.dismiss()
             }
         })
+
+
         viewModel?.listener = listener
+
+        if (newVersion != null) {
+            viewModel?.newVersion = newVersion
+            viewModel?.changeLog?.set(newVersion?.changeLog)
+            viewModel?.isShowChangeLog?.set(true)
+        }
+
+
         binding.vm = viewModel
         binding.btnCancelCheck.setOnClickListener {
             viewModel?.cancelCheckUpdate()
@@ -70,7 +82,9 @@ internal class GitReleaseDialog(
             WindowManager.LayoutParams.MATCH_PARENT
         )
         dialog?.window?.setBackgroundDrawableResource(R.color.bg_popup_transparent)
-        viewModel?.checkUpdate()
+        if (newVersion == null) {
+            viewModel?.checkUpdate()
+        }
     }
 
     override fun onStart() {

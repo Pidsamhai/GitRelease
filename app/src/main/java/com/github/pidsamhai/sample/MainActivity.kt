@@ -6,6 +6,9 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.github.pidsamhai.gitrelease.GitRelease
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.File
 
 val TAG = MainActivity::class.java.simpleName
@@ -28,7 +31,9 @@ class MainActivity : AppCompatActivity(), GitRelease.OnCheckReleaseListener {
         val gitRelease = GitRelease(this, config)
         gitRelease.checkUpdate(this)
         checkVersion.setOnClickListener {
-            gitRelease.checkUpdate(this)
+            GlobalScope.launch(Dispatchers.IO) {
+                gitRelease.checkUpdateNoLoading(this@MainActivity)
+            }
         }
     }
 
@@ -50,10 +55,6 @@ class MainActivity : AppCompatActivity(), GitRelease.OnCheckReleaseListener {
 
     override fun onUpdateCancel() {
         Log.i(TAG, "onUpdateCancel: ")
-    }
-
-    override fun onDownloadError() {
-        Log.i(TAG, "onDownloadError: ")
     }
 
     override fun onDownloadComplete(apk: File) {

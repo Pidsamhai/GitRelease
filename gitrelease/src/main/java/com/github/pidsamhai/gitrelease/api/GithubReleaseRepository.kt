@@ -17,7 +17,7 @@ import com.github.pidsamhai.gitrelease.util.validateApk
 import com.vdurmont.semver4j.Semver
 import java.io.File
 
-internal class GithubReleaseRepository(val config: GitRelease.Config) {
+internal class GithubReleaseRepository private constructor(val config: GitRelease.Config) {
 
     private val repositoryUrl: String =
         "https://api.github.com/repos/${config.owner}/${config.repo}/releases"
@@ -67,6 +67,7 @@ internal class GithubReleaseRepository(val config: GitRelease.Config) {
                 else -> Response.Error(NoReleaseAvailableException())
             }
         } catch (e: Exception) {
+            e.printStackTrace()
             Response.Error(CheckVersionException())
         }
     }
@@ -121,6 +122,15 @@ internal class GithubReleaseRepository(val config: GitRelease.Config) {
 
     private fun isNewVersion(version: String?): Boolean =
         Semver(version).isGreaterThan(config.currentVersion)
+
+    companion object {
+        @Volatile private var instance: GithubReleaseRepository? = null
+        fun getInstance(config: GitRelease.Config): GithubReleaseRepository {
+            return instance ?: synchronized(this) {
+                return instance ?: GithubReleaseRepository(config)
+            }
+        }
+    }
 }
 
 internal data class NewVersion(

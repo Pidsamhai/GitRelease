@@ -43,7 +43,7 @@ internal class DownloadDialogViewModel(
     }
 
     override fun onError(e: Exception) {
-        listener?.onDownloadError()
+        listener?.onDownloadCancel()
         _closeDialog.postValue(true)
     }
 
