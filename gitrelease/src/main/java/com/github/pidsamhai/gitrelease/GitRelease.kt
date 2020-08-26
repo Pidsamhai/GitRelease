@@ -51,14 +51,14 @@ class GitRelease(private val activity: AppCompatActivity,config: Config) {
     }
 
     interface OnCheckReleaseListener {
-        fun onCompleteNoUpdateFound()
-        fun onCancelCheckUpdate()
-        fun onError()
-        fun onDownloadCancel()
-        fun onUpdateCancel()
-        fun onDownloadComplete(apk: File)
-        fun onChecksumError()
-        fun onCompleteLatestVersion()
+        fun onCompleteNoUpdateFound() = Unit
+        fun onCancelCheckUpdate() = Unit
+        fun onError() = Unit
+        fun onDownloadCancel() = Unit
+        fun onUpdateCancel() = Unit
+        fun onDownloadComplete(apk: File) = Unit
+        fun onChecksumError() = Unit
+        fun onCompleteLatestVersion() = Unit
     }
 
     data class Config(

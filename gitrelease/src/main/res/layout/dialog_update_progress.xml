@@ -26,7 +26,6 @@
             android:layout_marginTop="20dp"
             android:layout_marginBottom="10dp"
             android:text="@string/gitRelease_update"
-            android:textColor="@android:color/black"
             android:textSize="20sp" />
 
         <TextView
@@ -70,7 +69,9 @@
                 android:layout_height="wrap_content"
                 tools:ignore="RelativeOverlap" />
         </RelativeLayout>
+
         <Button
+            android:background="?attr/selectableItemBackground"
             android:layout_margin="8dp"
             android:layout_gravity="end"
             android:id="@+id/btn_cancel"

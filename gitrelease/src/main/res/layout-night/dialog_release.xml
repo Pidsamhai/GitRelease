@@ -19,7 +19,8 @@
             android:layout_height="match_parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                tools:visibility="visible"
+                android:background="@color/dark_grey_alpha8"
+                tools:visibility="gone"
                 android:visibility="@{vm.isShowChangeLog ? View.VISIBLE : View.GONE}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -116,11 +117,11 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
-                tools:visibility="gone"
+                android:background="@color/dark_grey_alpha8"
+                tools:visibility="visible"
                 android:layout_marginStart="24dp"
                 android:layout_marginEnd="24dp"
                 android:orientation="vertical"
-                android:background="@android:color/white"
                 android:visibility="@{vm.isShowChangeLog ? View.GONE : View.VISIBLE}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -135,7 +136,6 @@
                     android:layout_marginLeft="24dp"
                     android:layout_marginTop="24dp"
                     android:text="@string/gitRelease_checking_new_version"
-                    android:textColor="@android:color/black"
                     android:textSize="21sp" />
                 <TextView
                     android:textSize="16sp"
