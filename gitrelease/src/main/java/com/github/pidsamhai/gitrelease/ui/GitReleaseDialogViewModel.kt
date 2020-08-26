@@ -27,6 +27,7 @@ internal class GitReleaseDialogViewModel(private val repository: GithubReleaseRe
     val changeLog = ObservableField<String>("")
     val isShowChangeLog = ObservableBoolean(false)
     val description = ObservableField<String>("")
+    val canUpdate = ObservableBoolean(true)
 
     fun checkUpdate() {
         checkUpdateJob = viewModelScope.launch(Dispatchers.IO) {
@@ -36,6 +37,8 @@ internal class GitReleaseDialogViewModel(private val repository: GithubReleaseRe
                         is NoFileAssetsException -> {
                             changeLog.set(res.err.changeLog)
                             isShowChangeLog.set(true)
+                            canUpdate.set(false)
+                            description.set("No file Asset")
                         }
                         is NoReleaseAvailableException -> {
                             _closeDialog.postValue(true)

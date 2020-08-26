@@ -20,6 +20,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 tools:visibility="visible"
+                android:background="@android:color/white"
                 android:visibility="@{vm.isShowChangeLog ? View.VISIBLE : View.GONE}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -106,6 +107,7 @@
                         android:text="@string/gitRelease_cancel" />
 
                     <Button
+                        android:visibility="@{vm.canUpdate ? View.VISIBLE : View.GONE}"
                         android:id="@+id/btn_oK"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
