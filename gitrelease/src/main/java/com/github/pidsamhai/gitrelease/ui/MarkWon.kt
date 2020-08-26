@@ -6,17 +6,23 @@ import io.noties.markwon.AbstractMarkwonPlugin
 import io.noties.markwon.Markwon
 import io.noties.markwon.core.MarkwonTheme
 import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
-import io.noties.markwon.image.coil.CoilImagesPlugin
+import io.noties.markwon.image.ImagesPlugin
+import io.noties.markwon.image.gif.GifMediaDecoder
 
 internal class MarkWon(
     context: Context,
     progressColor: Int? = null
 ) {
     private val builder = Markwon.builder(context)
+
     init {
         builder
             .usePlugin(StrikethroughPlugin.create())
-            .usePlugin(CoilImagesPlugin.create(context))
+            .usePlugin(ImagesPlugin.create { plugin ->
+                plugin.addMediaDecoder(
+                    GifMediaDecoder.create(true)
+                )
+            })
             .usePlugin(object : AbstractMarkwonPlugin() {
                 override fun configureTheme(builder: MarkwonTheme.Builder) {
                     builder.linkColor(progressColor ?: Color.BLUE)
