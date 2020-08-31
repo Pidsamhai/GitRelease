@@ -47,6 +47,9 @@ dependencies {
     implementation "io.noties.markwon:image:$markwon_version"
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.19'
 
+    def work_version = "2.4.0"
+    api "androidx.work:work-runtime-ktx:$work_version"
+
     def lifecycle_version = "2.2.0"
     // ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"

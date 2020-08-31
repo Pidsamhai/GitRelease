@@ -1,20 +1,32 @@
 package com.github.pidsamhai.sample
 
 import android.annotation.SuppressLint
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
+import androidx.core.os.ConfigurationCompat
+import androidx.work.Configuration
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import com.github.pidsamhai.gitrelease.GitRelease
+import com.github.pidsamhai.gitrelease.GitReleaseWorker
+import com.github.pidsamhai.gitrelease.GitReleaseWorkerFactory
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import java.io.File
 
 val TAG = MainActivity::class.java.simpleName
 
 class MainActivity : AppCompatActivity(), GitRelease.OnCheckReleaseListener {
 
+    @RequiresApi(Build.VERSION_CODES.N)
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,11 +41,19 @@ class MainActivity : AppCompatActivity(), GitRelease.OnCheckReleaseListener {
             true
         )
         val gitRelease = GitRelease(this, config)
-        gitRelease.checkUpdate(this)
+//        gitRelease.checkUpdate(this)
+        val workRequest: WorkRequest = OneTimeWorkRequestBuilder<GitReleaseWorker>().build()
+//        val configx = Configuration.Builder()
+//            .setWorkerFactory(GitReleaseWorkerFactory(config))
+//            .build()
+//
+//        WorkManager.initialize(this, configx)
+//        val wmk = WorkManager.getInstance(this)
         checkVersion.setOnClickListener {
-            GlobalScope.launch(Dispatchers.IO) {
-                gitRelease.checkUpdateNoLoading(this@MainActivity)
-            }
+
+           WorkManager.getInstance(this)
+               .enqueue(workRequest)
+
         }
     }
 

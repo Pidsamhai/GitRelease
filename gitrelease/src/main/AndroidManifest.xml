@@ -1,6 +1,12 @@
-<manifest package="com.github.pidsamhai.gitrelease">
+<manifest package="com.github.pidsamhai.gitrelease"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <application>
-        /
+        <provider
+            android:name="androidx.work.impl.WorkManagerInitializer"
+            android:authorities="${applicationId}.workmanager-init"
+            tools:node="remove" />
     </application>
+
 </manifest>
