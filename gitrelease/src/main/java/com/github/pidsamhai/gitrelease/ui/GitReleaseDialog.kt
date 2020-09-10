@@ -1,12 +1,11 @@
 package com.github.pidsamhai.gitrelease.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.github.pidsamhai.gitrelease.GitRelease
+import com.github.pidsamhai.gitrelease.worker.GitRelease
 import com.github.pidsamhai.gitrelease.R
 import com.github.pidsamhai.gitrelease.api.GithubReleaseRepository
 import com.github.pidsamhai.gitrelease.api.NewVersion

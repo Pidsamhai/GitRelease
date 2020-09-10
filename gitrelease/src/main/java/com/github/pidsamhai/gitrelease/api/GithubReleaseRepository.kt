@@ -1,12 +1,15 @@
 package com.github.pidsamhai.gitrelease.api
 
+import android.content.Context
+import android.os.Parcelable
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.requests.CancellableRequest
 import com.github.kittinunf.fuel.coroutines.awaitObjectResponse
 import com.github.kittinunf.fuel.gson.gsonDeserializerOf
 import com.github.kittinunf.fuel.httpGet
-import com.github.pidsamhai.gitrelease.GitRelease
+import com.github.pidsamhai.gitrelease.worker.GitRelease
 import com.github.pidsamhai.gitrelease.exceptions.*
+import com.github.pidsamhai.gitrelease.getReleaseConfig
 import com.github.pidsamhai.gitrelease.response.Response
 import com.github.pidsamhai.gitrelease.response.checksum.Checksum
 import com.github.pidsamhai.gitrelease.response.github.Asset
@@ -15,9 +18,10 @@ import com.github.pidsamhai.gitrelease.util.reGexApkFileType
 import com.github.pidsamhai.gitrelease.util.reGexCheckSumFile
 import com.github.pidsamhai.gitrelease.util.validateApk
 import com.vdurmont.semver4j.Semver
+import kotlinx.android.parcel.Parcelize
 import java.io.File
 
-internal class GithubReleaseRepository private constructor(val config: GitRelease.Config) {
+internal class GithubReleaseRepository private constructor(val context: Context, val config: GitRelease.Config) {
 
     private val repositoryUrl: String =
         "https://api.github.com/repos/${config.owner}/${config.repo}/releases"
@@ -125,14 +129,16 @@ internal class GithubReleaseRepository private constructor(val config: GitReleas
 
     companion object {
         @Volatile private var instance: GithubReleaseRepository? = null
-        fun getInstance(config: GitRelease.Config): GithubReleaseRepository {
+        fun getInstance(context: Context): GithubReleaseRepository {
+            val config = context.getReleaseConfig()
             return instance ?: synchronized(this) {
-                return instance ?: GithubReleaseRepository(config)
+                return instance ?: GithubReleaseRepository(context, config)
             }
         }
     }
 }
 
+@Parcelize
 internal data class NewVersion(
     val apkName: String,
     val version: String,
@@ -141,7 +147,7 @@ internal data class NewVersion(
     val changeLog: String,
     val checksumUrl: String,
     val checksumName: String
-)
+): Parcelable
 
 internal interface OnDownloadListener {
     fun onError(e: Exception)

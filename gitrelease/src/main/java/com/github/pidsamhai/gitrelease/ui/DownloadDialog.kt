@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.github.pidsamhai.gitrelease.GitRelease
+import com.github.pidsamhai.gitrelease.worker.GitRelease
 import com.github.pidsamhai.gitrelease.api.GithubReleaseRepository
 import com.github.pidsamhai.gitrelease.api.NewVersion
 import com.github.pidsamhai.gitrelease.databinding.DialogUpdateProgressBinding

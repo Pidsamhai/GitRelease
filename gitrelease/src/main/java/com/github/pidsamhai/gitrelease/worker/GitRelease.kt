@@ -1,20 +1,26 @@
-package com.github.pidsamhai.gitrelease
+package com.github.pidsamhai.gitrelease.worker
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.os.Parcelable
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.github.pidsamhai.gitrelease.R
 import com.github.pidsamhai.gitrelease.api.GithubReleaseRepository
 import com.github.pidsamhai.gitrelease.exceptions.NoFileAssetsException
 import com.github.pidsamhai.gitrelease.exceptions.NoNewVersionAvailableException
 import com.github.pidsamhai.gitrelease.exceptions.NoReleaseAvailableException
+import com.github.pidsamhai.gitrelease.receiver.GitReleaseReceiver
 import com.github.pidsamhai.gitrelease.response.Response
 import com.github.pidsamhai.gitrelease.ui.GitReleaseDialog
+import com.google.gson.Gson
+import kotlinx.android.parcel.Parcelize
 import java.io.File
 
-class GitRelease(private val activity: AppCompatActivity,config: Config) {
+class GitRelease(private val activity: AppCompatActivity) {
 
-    private val repository = GithubReleaseRepository.getInstance(config)
+    private val repository = GithubReleaseRepository.getInstance(activity)
     private val releaseDialog = GitReleaseDialog(repository)
 
     fun checkUpdate(listener: OnCheckReleaseListener? = null) {
@@ -61,16 +67,32 @@ class GitRelease(private val activity: AppCompatActivity,config: Config) {
         fun onCompleteLatestVersion() = Unit
     }
 
+    @Parcelize
     data class Config(
         val owner: String,
         val repo: String,
         val currentVersion: String,
-        val checksum: Boolean = true
-    )
+        val checksum: Boolean = true,
+        val openAfterDownload: Boolean = true
+    ): Parcelable
 
     companion object {
         fun installApk(activity: Activity, apk: File) {
             com.github.pidsamhai.gitrelease.util.installApk(activity, apk)
+        }
+
+        fun initConfig(config: Config, context: Context) {
+            context.getSharedPreferences(context.getString(R.string.gitrelease_config), Context.MODE_PRIVATE)
+                .edit()
+                .putString(context.getString(R.string.gitrelease_config_key),Gson().toJson(config))
+                .apply()
+        }
+
+        fun startWorker(context: Context) {
+            val intent = Intent(context, GitReleaseReceiver::class.java).apply {
+                action = GitReleaseReceiver.ACTIONS.CHK
+            }
+            context.sendBroadcast(intent)
         }
     }
 }

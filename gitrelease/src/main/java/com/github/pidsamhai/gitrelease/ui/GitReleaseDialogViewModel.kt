@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.github.pidsamhai.gitrelease.GitRelease
+import com.github.pidsamhai.gitrelease.worker.GitRelease
 import com.github.pidsamhai.gitrelease.api.GithubReleaseRepository
 import com.github.pidsamhai.gitrelease.api.NewVersion
 import com.github.pidsamhai.gitrelease.exceptions.NoFileAssetsException

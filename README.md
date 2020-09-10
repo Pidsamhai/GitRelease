@@ -24,7 +24,7 @@ allprojects {
 dependencies {
   implementation 'com.github.Pidsamhai:GitRelease:<latest-version>'
   // This project uses kotlinx-coroutines.
-  implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.5'
+  implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:<latest-version>'
 }
 ```
 
@@ -63,28 +63,33 @@ filepath.xml   res > xml
 ## Quick start
 
 ```kotlin
-val TAG = MainActivity::class.java.simpleName
-
 class MainActivity : AppCompatActivity(), GitRelease.OnCheckReleaseListener {
+
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val owner = "Pidsamhai" // Owner Name
-        val repo = "release_file_test" // Repository name
-        val currentVersion = BuildConfig.VERSION_NAME
+
         val config = GitRelease.Config(
-            owner,
-            repo,
-            currentVersion,
-            true
+            owner = "Pidsamhai" /* Owner Name */,
+            repo = "release_file_test" /* Repository name */,
+            currentVersion = BuildConfig.VERSION_NAME,
+            checksum = true,
+            openAfterDownload = true
         )
-        val gitRelease = GitRelease(this, config, this)
-        gitRelease.checkUpdate()
+
+        GitRelease.initConfig(config, this) // Init config
+
+        GitRelease.startWorker(this) // start background service check update notification
+
         checkVersion.setOnClickListener {
-            gitRelease.checkUpdate()
+            GlobalScope.launch {
+                GitRelease(this@MainActivity)
+                    .checkUpdateNoLoading(this@MainActivity)
+            }
         }
+
     }
 
     override fun onCompleteNoUpdateFound() {
@@ -105,10 +110,6 @@ class MainActivity : AppCompatActivity(), GitRelease.OnCheckReleaseListener {
 
     override fun onUpdateCancel() {
         Log.i(TAG, "onUpdateCancel: ")
-    }
-
-    override fun onDownloadError() {
-        Log.i(TAG, "onDownloadError: ")
     }
 
     override fun onDownloadComplete(apk: File) {
@@ -144,20 +145,26 @@ class MainActivity : AppCompatActivity(), GitRelease.OnCheckReleaseListener {
 
 ### Changelog
 
-### 0.2.4-beta
+#### X.X.X
+
+*   add background services
+*   use fragment dialog and viewModel
+*   save config to share preference
+
+#### 0.2.4-beta
 
 *   fix serialize error when enable minify
 
-### 0.2.3-beta
+#### 0.2.3-beta
 
 *   update listener
 *   fix message color loading dialog
 
-### 0.2.2-beta-hotfix-1
+#### 0.2.2-beta-hotfix-1
 
 *   fix listener
 
-### 0.2.2-beta
+#### 0.2.2-beta
 
 *   add Dark Theme
 *   add check version callback

@@ -9,6 +9,9 @@
     <string name="gitRelease_update_massage">update inprogress, don\'t close dialog!</string>
     <string name="gitRelease_checking_new_version">Checking new version…</string>
     <string name="gitRelease_loading">Loading…</string>
+    <string name="gitRelease_download">Download</string>
     <string name="gitRelease_new_version">New version !!</string>
     <string name="gitRelease_new_update">New Update available !!</string>
+    <string name="gitrelease_config_key">gitrelease_config_key</string>
+    <string name="gitrelease_config">gitrelease_config</string>
 </resources>

@@ -4,7 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.databinding.*
 import androidx.lifecycle.*
-import com.github.pidsamhai.gitrelease.GitRelease
+import com.github.pidsamhai.gitrelease.worker.GitRelease
 import com.github.pidsamhai.gitrelease.R
 import com.github.pidsamhai.gitrelease.api.GithubReleaseRepository
 import com.github.pidsamhai.gitrelease.api.NewVersion
