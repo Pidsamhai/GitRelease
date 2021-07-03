@@ -8,31 +8,19 @@ import java.io.File
 import java.io.FileInputStream
 import java.security.MessageDigest
 
-internal fun validateApk(apk: File, md5: File): Boolean {
-    when (val validMd5 = md5.toCheckSum()) {
-        is Checksum -> {
-            val apkMd5 = validMd5.algorithm?.let { apk.md5(it) } ?: ""
-            return when (validMd5.algorithm) {
-                "md5" -> {
-                    apkMd5.trim() == validMd5.type?.md5 ?: ""
-                }
-                "sha1" -> {
-                    apkMd5.trim() == validMd5.type?.sha1 ?: ""
-                }
-                "sha256" -> {
-                    apkMd5.trim() == validMd5.type?.sha256 ?: ""
-                }
-                else -> {
-                    false
-                }
-            }
+internal fun validateApk(apk: File, checksum: Checksum): Boolean {
+    val apkChecksum = apk.md5(checksum.algorithm ?: return false)
+    return when (checksum.algorithm) {
+        "md5" -> {
+            apkChecksum.trim() == checksum.type?.md5
         }
-        is Error -> {
-            return false
+        "sha1" -> {
+            apkChecksum.trim() == checksum.type?.sha1
         }
-        else -> {
-            return false
+        "sha256" -> {
+            apkChecksum.trim() == checksum.type?.sha256
         }
+        else -> false
     }
 }
 

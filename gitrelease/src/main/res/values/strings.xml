@@ -10,4 +10,5 @@
     <string name="gitRelease_checking_new_version">Checking new version…</string>
     <string name="gitRelease_loading">Loading…</string>
     <string name="gitRelease_new_version">New version !!</string>
+    <string name="gitRelease_new_update">New Update available !!</string>
 </resources>

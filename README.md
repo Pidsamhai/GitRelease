@@ -1,5 +1,5 @@
 <h1 align="center">GitRelease</h1>
-<p align="center">
+<p  align="center">
 <a href="https://www.codacy.com/gh/Pidsamhai/GitRelease?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Pidsamhai/GitRelease&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/90a5f1b1916b49ddaa30aac59c749bf3"/></a>
 <a href="https://jitpack.io/#Pidsamhai/GitRelease/"> <img src="https://jitpack.io/v/Pidsamhai/GitRelease.svg" /></a>
 <a href="https://kotlinlang.org">&nbsp<img src="https://img.shields.io/badge/Kotlin-1.3.71-blue.svg" /> </a>
@@ -63,6 +63,8 @@ filepath.xml   res > xml
 ## Quick start
 
 ```kotlin
+val TAG = MainActivity::class.java.simpleName
+
 class MainActivity : AppCompatActivity(), GitRelease.OnCheckReleaseListener {
 
     @SuppressLint("SetTextI18n")
@@ -72,32 +74,53 @@ class MainActivity : AppCompatActivity(), GitRelease.OnCheckReleaseListener {
         val owner = "Pidsamhai" // Owner Name
         val repo = "release_file_test" // Repository name
         val currentVersion = BuildConfig.VERSION_NAME
-        val gitRelease = GitRelease(this, owner, repo, currentVersion).apply {
-            loading = true
-            checksum = true
-            darkTheme = false
-            progressColor = Color.YELLOW
-        }
-        gitRelease.checkNewVersion(this)
+        val config = GitRelease.Config(
+            owner,
+            repo,
+            currentVersion,
+            true
+        )
+        val gitRelease = GitRelease(this, config, this)
+        gitRelease.checkUpdate()
         checkVersion.setOnClickListener {
-            gitRelease.checkNewVersion()
+            gitRelease.checkUpdate()
         }
     }
 
-    override fun onComplete() {
-        Log.i(TAG, "onComplete: ")
+    override fun onCompleteNoUpdateFound() {
+        Log.i(TAG, "onCompleteNoUpdateFound: ")
     }
 
-    override fun onCancel() {
-        Log.i(TAG, "onCancel: ")
+    override fun onCancelCheckUpdate() {
+        Log.i(TAG, "onCancelCheckUpdate: ")
     }
 
-    override fun onCancelDownload() {
-        Log.i(TAG, "onCancelDownload: ")
+    override fun onError() {
+        Log.i(TAG, "onError: ")
     }
 
-    override fun onCancelUpdate() {
-        Log.i(TAG, "onCancelUpdate: ")
+    override fun onDownloadCancel() {
+        Log.i(TAG, "onDownloadCancel: ")
+    }
+
+    override fun onUpdateCancel() {
+        Log.i(TAG, "onUpdateCancel: ")
+    }
+
+    override fun onDownloadError() {
+        Log.i(TAG, "onDownloadError: ")
+    }
+
+    override fun onDownloadComplete(apk: File) {
+        GitRelease.installApk(this, apk)
+    }
+
+    override fun onChecksumError() {
+        Log.i(TAG, "onChecksumError: ")
+    }
+
+    override fun onCompleteLatestVersion() {
+        Log.i(TAG, "onCompleteLatestVersion: ")
     }
 }
 ```
@@ -123,24 +146,24 @@ class MainActivity : AppCompatActivity(), GitRelease.OnCheckReleaseListener {
 
 ### 0.2.4-beta
 
-* fix serialize error when enable minify
+*   fix serialize error when enable minify
 
 ### 0.2.3-beta
 
-* update listener
-* fix message color loading dialog
+*   update listener
+*   fix message color loading dialog
 
 ### 0.2.2-beta-hotfix-1
 
-*  fix listener
+*   fix listener
 
 ### 0.2.2-beta
 
-*  add Dark Theme
-*  add check version callback
-*  fix cancel check version
-*  remove [Markdown View](https://github.com/mukeshsolanki/MarkdownView-Android)
-*  render markdown with [MarkWon](https://github.com/noties/Markwon)
+*   add Dark Theme
+*   add check version callback
+*   fix cancel check version
+*   remove [Markdown View](https://github.com/mukeshsolanki/MarkdownView-Android)
+*   render markdown with [MarkWon](https://github.com/noties/Markwon)
 
 ### 0.2.1-beta
 
@@ -156,10 +179,6 @@ class MainActivity : AppCompatActivity(), GitRelease.OnCheckReleaseListener {
 #### 0.1-alpha
 
 *   initial release
-
-
-
-
 
 ## License
 
